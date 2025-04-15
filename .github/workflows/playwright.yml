@@ -25,8 +25,18 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      # Caching the Playwright browsers
+      - name: 🚀 Cache Playwright browsers
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-browsers-${{ runner.os }}-
+
       - name: 🌐 Install Playwright browsers
         run: npx playwright install --with-deps
+        # This will only download if it's not already cached
 
       - name: 🧪 Run tests with Allure reporter
         run: npx playwright test
