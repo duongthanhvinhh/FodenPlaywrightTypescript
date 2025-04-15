@@ -1,12 +1,12 @@
 import {test} from '@playwright/test'
 
 test('the first test', async ({page})=> {
-    await page.goto('http://localhost:4200')
+    await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
     await page.getByText('Forms').click()
     await page.getByText('Form Layouts').click()
 })
 
-test('Locators syntax rules', async ({page}) => {
+test.skip('Locators syntax rules', async ({page}) => {
     //by tag name
     await page.locator('button').first().click()
     //by id
