@@ -1,4 +1,9 @@
-import {test} from '@playwright/test'
+import {expect, test} from '@playwright/test'
+
+test.beforeEach('Run before each test', async ({page}, testInfo) =>{
+    testInfo.setTimeout(testInfo.timeout + 2000);
+})
+
 
 test('the first test', async ({page})=> {
     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
@@ -10,7 +15,11 @@ test.skip('Locators syntax rules', async ({page}) => {
     //by tag name
     await page.locator('button').first().click()
     //by id
-    page.locator('#userId')
+    const userInput = page.locator('#userId')
+    await userInput.waitFor({state: 'attached'})
+    const text = await userInput.allTextContents()
+    expect(text).toEqual("Foden")
+    expect(userInput).toHaveText("Foden", {timeout: 20000})
     //by class name
     page.locator('.big-button')
     //by class name (full)
@@ -25,6 +34,16 @@ test.skip('Locators syntax rules', async ({page}) => {
     page.locator(':text("Input your")')
     //by exact text match
     page.locator(':text-is("Input your username")')
+
+
+    //__wait for element
+    await page.waitForSelector("#userId")
+
+    //__wait for particular response
+    await page.waitForResponse("http://uitestingplayground.com/ajaxdata")
+
+    //__wait for network calls to be completed (not recommended)
+    await page.waitForLoadState("networkidle")
 })
 
 // test.describe('first test suite', () => {
