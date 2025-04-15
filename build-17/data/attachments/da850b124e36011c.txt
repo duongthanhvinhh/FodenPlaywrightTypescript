@@ -1,0 +1,250 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: the first test
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/firstTest.spec.ts:3:5
+
+# Error details
+
+```
+Error: page.goto: Test timeout of 30000ms exceeded.
+Call log:
+  - navigating to "https://foden-testing-application.vercel.app/pages/iot-dashboard", waiting until "load"
+
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/firstTest.spec.ts:4:16
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+  - text: Nick Jones
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+      - text: IoT Dashboard
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms":
+      - img
+      - text: Forms
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+      - text: Modal & Overlays
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+      - text: Extra Components
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+      - text: Charts
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+      - text: Tables & Data
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+      - text: Auth
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text:  Light ON  Roller Shades ON  Wireless Audio ON  Coffee Maker ON
+- list:
+  - listitem:
+    - link "Temperature"
+  - listitem:
+    - link "Humidity"
+- img
+- text: ° 24 Celsius
+- button:
+  - img
+- radio "" [checked]
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text:  Consumed 816 kWh Spent 291 USD
+- button "week"
+- text: Room Management
+- img: Kitchen Bedroom Hallway Living Room
+- text: My Playlist
+- heading "Harder" [level=4]
+- text: Daft Punk
+- slider: "0"
+- text: 00:00 - 00:30
+- button:
+  - img
+- button:
+  - img
+- button:
+  - img
+- button:
+  - img
+- button:
+  - img
+- button:
+  - img
+- slider: "100"
+- button:
+  - img
+- list:
+  - listitem:
+    - link "Contacts"
+  - listitem:
+    - link "Recent"
+- list:
+  - listitem:
+    - text: Nick Jones mobile
+    - img
+  - listitem:
+    - text: Eva Moor home
+    - img
+  - listitem:
+    - text: Jack Williams mobile
+    - img
+  - listitem:
+    - text: Lee Wong mobile
+    - img
+  - listitem:
+    - text: Alan Thompson home
+    - img
+  - listitem:
+    - text: Kate Martinez work
+    - img
+- text: "Solar Energy Consumption 6.421 kWh out of 8.421 kWh UI Kitten UI Kitten is a framework that contains a set of commonly used UI components styled in a similar way. The most awesome thing: you can change themes on the fly by just passing a different set of variables. 100% native. Give our kitten a try!"
+- link:
+  - img
+- link ""
+- link ""
+- link:
+  - img
+- text: Traffic Consumption
+- button "month"
+- text: New York Mon 29 May 20°
+- img
+- text: max 23° min 19° wind 4 km/h hum 87% Sun  17° Mon  19° Tue  22° Wed  21° Security Cameras
+- button ""
+- button:
+  - img
+- text: "Camera #1 Camera #2 Camera #3 Camera #4"
+- img
+- text: Pause
+- img
+- text: Logs
+- img
+- text: Search
+- img
+- text: Setup
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import {test} from '@playwright/test'
+   2 |
+   3 | test('the first test', async ({page})=> {
+>  4 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+     |                ^ Error: page.goto: Test timeout of 30000ms exceeded.
+   5 |     await page.getByText('Forms').click()
+   6 |     await page.getByText('Form Layouts').click()
+   7 | })
+   8 |
+   9 | test.skip('Locators syntax rules', async ({page}) => {
+  10 |     //by tag name
+  11 |     await page.locator('button').first().click()
+  12 |     //by id
+  13 |     page.locator('#userId')
+  14 |     //by class name
+  15 |     page.locator('.big-button')
+  16 |     //by class name (full)
+  17 |     page.locator('[class="full-width size-medium status-basic shape-rectangle nb-transition"]')
+  18 |     //by attribute
+  19 |     page.locator('[placeholder="Username"]')
+  20 |     //combine different selectors
+  21 |     page.locator('input[placeholder="Email"][nbinput]')
+  22 |     //by xpath (not recommend)
+  23 |     page.locator('//input[@placeholder="Username"]')
+  24 |     //by partial text match
+  25 |     page.locator(':text("Input your")')
+  26 |     //by exact text match
+  27 |     page.locator(':text-is("Input your username")')
+  28 | })
+  29 |
+  30 | // test.describe('first test suite', () => {
+  31 | //     test('first test in the suite', () => {
+  32 | //         console.log('first test in the suite')
+  33 | //     })
+  34 |
+  35 | //     test('second test in the suite', () => {
+  36 | //         console.log('first test in the suite')
+  37 | //     })
+  38 | // })
+```
