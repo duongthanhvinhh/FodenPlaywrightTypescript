@@ -25,18 +25,20 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      # Caching the Playwright browsers
-      - name: 🚀 Cache Playwright browsers
+      # Cache Playwright dependencies and browsers more intelligently
+      - name: 🚀 Cache Playwright dependencies and browsers
         uses: actions/cache@v3
         with:
-          path: ~/.cache/ms-playwright
-          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            ~/.cache/ms-playwright
+            node_modules
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ steps.playwright-version.outputs.version }}
           restore-keys: |
-            playwright-browsers-${{ runner.os }}-
+            playwright-${{ runner.os }}-
 
       - name: 🌐 Install Playwright browsers
-        run: npx playwright install --with-deps
-        # This will only download if it's not already cached
+        run: |
+          npx playwright install --with-deps
 
       - name: 🧪 Run tests with Allure reporter
         run: npx playwright test
@@ -50,6 +52,15 @@ jobs:
         run: |
           mkdir -p ./gh-pages/build-${{ github.run_number }}
           cp -r ./allure-report/* ./gh-pages/build-${{ github.run_number }}/
+
+      - name: 🧹 Clean up old builds (keep last 10 builds)
+        run: |
+          builds=$(ls ./gh-pages | grep 'build-' | sort -V)
+          old_builds=$(echo "$builds" | head -n -10)
+          for build in $old_builds; do
+            echo "Removing old build: $build"
+            rm -rf "./gh-pages/$build"
+          done
 
       - name: 📎 Add summary link to GitHub UI
         if: always()
