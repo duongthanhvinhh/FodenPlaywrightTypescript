@@ -2,6 +2,7 @@
 After initializing Playwright with:
 npm init playwright@latest
 
+
 You can run the following commands inside your project directory:
 # 🧪 Run all tests (end-to-end)
 npx playwright test
