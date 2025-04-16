@@ -1,0 +1,213 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Form layouts page >> Input field
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:16:9
+
+# Error details
+
+```
+Error: expect(received).toEqual(expected) // deep equality
+
+Expected: "test@test.com"
+Received: {Symbol(async_id_symbol): 6219, Symbol(trigger_async_id_symbol): 5388, Symbol(kResourceStore): undefined}
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:26:28
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+  - text: Nick Jones
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+      - text: IoT Dashboard
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms" [expanded]:
+      - img
+      - text: Forms
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+      - text: Modal & Overlays
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+      - text: Extra Components
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+      - text: Charts
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+      - text: Tables & Data
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+      - text: Auth
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text: Inline form
+- textbox "Jane Doe"
+- textbox "Email"
+- checkbox "Remember me"
+- text: Remember me
+- button "Submit"
+- text: Using the Grid Email
+- textbox "Email": test@test.com
+- text: Password
+- textbox "Password"
+- text: Radios
+- radio "Option 1"
+- text: Option 1
+- radio "Option 2"
+- text: Option 2
+- radio "Disabled Option" [checked] [disabled]
+- text: Disabled Option
+- button "Sign in"
+- text: Form without labels
+- textbox "Recipients"
+- textbox "Subject"
+- textbox "Message"
+- button "Send"
+- text: Basic form Email address
+- textbox "Email address"
+- text: Password
+- textbox "Password"
+- checkbox "Check me out"
+- text: Check me out
+- button "Submit"
+- text: Block form First Name
+- textbox "First Name"
+- text: Last Name
+- textbox "Last Name"
+- text: Email
+- textbox "Email"
+- text: Website
+- textbox "Website"
+- button "Submit"
+- text: Horizontal form Email
+- textbox "Email"
+- text: Password
+- textbox "Password"
+- checkbox "Remember me"
+- text: Remember me
+- button "Sign in"
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 |
+   4 | test.beforeEach('Go to test URL', async ({page}) => {
+   5 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+   6 |     // await page.goto('http://localhost:4200')
+   7 | })
+   8 |
+   9 | test.describe('Form layouts page', () => {
+  10 |
+  11 |     test.beforeEach(async ({page}) => {
+  12 |         await page.getByText('Forms').click()
+  13 |         await page.getByText('Form Layouts').click()
+  14 |     })
+  15 |
+  16 |     test('Input field', async ({page}) => {
+  17 |         const usingTheGridEmailInput = page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"})
+  18 |         await usingTheGridEmailInput.fill('test@test.com')
+  19 |         await usingTheGridEmailInput.clear()
+  20 |         await usingTheGridEmailInput.pressSequentially('test@test.com')
+  21 |         await usingTheGridEmailInput.clear()
+  22 |         await usingTheGridEmailInput.pressSequentially('test@test.com', {delay: 500})
+  23 |
+  24 |         //generic assertion
+  25 |         const inputValue = usingTheGridEmailInput.inputValue()
+> 26 |         expect(inputValue).toEqual('test@test.com')
+     |                            ^ Error: expect(received).toEqual(expected) // deep equality
+  27 |
+  28 |         //locator assertion
+  29 |         await expect(usingTheGridEmailInput).toHaveValue('test@test.com')
+  30 |
+  31 |     })
+  32 |
+  33 |     test('Radio buttons', async ({page}) => {
+  34 |         const usingTheGridForm = page.locator('nb-card', {hasText: "Using the Grid"})
+  35 |         // await usingTheGridForm.getByLabel('Option 1').check({force: true})
+  36 |         // or
+  37 |         await usingTheGridForm.getByRole('radio', {name: 'Option 1'}).check({force: true})
+  38 |         const radioStatus = usingTheGridForm.getByRole('radio', {name: 'Option 1'}).isChecked()
+  39 |         expect(radioStatus).toBeTruthy()
+  40 |
+  41 |         expect(await usingTheGridForm.getByRole('radio', {name: 'Option 2'}).isChecked()).toBeFalsy()
+  42 |     })
+  43 |
+  44 | })
+```
