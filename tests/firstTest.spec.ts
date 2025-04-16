@@ -7,6 +7,7 @@ test.beforeEach('Run before each test', async ({page}, testInfo) =>{
 
 test('the first test', async ({page})=> {
     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+    // await page.goto('http://localhost:4200')
     await page.getByText('Forms').click()
     await page.getByText('Form Layouts').click()
 })
