@@ -38,6 +38,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
     headless: true,
+    viewport: { width: 1920, height: 1080 }, // or viewport: null to use full screen
     launchOptions: {
       args: ['--start-maximized']
     },
