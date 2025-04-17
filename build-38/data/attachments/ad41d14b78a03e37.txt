@@ -1,0 +1,153 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: drag and drop
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:217:5
+
+# Error details
+
+```
+Error: browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Looks like you launched a headed browser without having a XServer running.                     ║
+║ Set either 'headless: true' or use 'xvfb-run <your-playwright-app>' before running Playwright. ║
+║                                                                                                ║
+║ <3 Playwright Team                                                                             ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+Call log:
+  - <launching> /home/runner/.cache/ms-playwright/firefox-1475/firefox/firefox -no-remote -wait-for-browser -foreground -profile /tmp/playwright_firefoxdev_profile-y6SfsQ -juggler-pipe --start-maximized -silent
+  - <launched> pid=6466
+  - [pid=6466][err] Error: no DISPLAY environment variable specified
+  - [pid=6466] <process did exit: exitCode=1, signal=null>
+  - [pid=6466] starting temporary directories cleanup
+
+```
+
+# Test source
+
+```ts
+  117 |
+  118 |     await page.getByRole('table').locator('tr', {hasText: "mdo@gmail.com"}).locator('.nb-trash').click()
+  119 |     await expect(page.locator('table tr').first()).not.toHaveText("mdo@gmail.com")
+  120 | })
+  121 |
+  122 | test('tables', async ({page}) => {
+  123 |     await page.getByText('Tables & Data').click()
+  124 |     await page.getByText('Smart Table').click()
+  125 |
+  126 |     //Get any row by text in row
+  127 |     const targetRow = page.getByRole('row', {name: 'twitter@outlook.com'})
+  128 |     await targetRow.locator('.nb-edit').click()
+  129 |     await page.locator('input-editor').getByPlaceholder('Age').clear()
+  130 |     await page.locator('input-editor').getByPlaceholder('Age').fill('35')
+  131 |     await page.locator('.nb-checkmark').click()
+  132 |
+  133 |     //test filter of the table
+  134 |     const ages = ["20", "30", "40", "200"]
+  135 |     for(let age of ages){
+  136 |         await page.locator('input-filter').getByPlaceholder('Age').clear()
+  137 |         await page.locator('input-filter').getByPlaceholder('Age').fill(age)
+  138 |         await page.waitForTimeout(5000)
+  139 |
+  140 |         const ageRows = page.locator('tbody tr')
+  141 |
+  142 |         for(let row of await ageRows.all()){
+  143 |             const cellValue = await row.locator('td').last().textContent()
+  144 |             if(age == "200"){
+  145 |                 expect(await page.getByRole('table').textContent()).toContain('No data found')
+  146 |             } else {
+  147 |                 expect(cellValue).toEqual(age)
+  148 |             }
+  149 |         }
+  150 |     }
+  151 | })
+  152 |
+  153 | test('datepicker', async ({page}) => {
+  154 |     await page.getByText('Forms').click()
+  155 |     await page.getByText('Datepicker').click()
+  156 |     const calendarInput = page.getByPlaceholder('Form Picker')
+  157 |     await calendarInput.click()
+  158 |
+  159 |     let date = new Date()
+  160 |     date.setDate(date.getDate() + 7)
+  161 |     const expectedDate = date.getDate().toString()
+  162 |     const expectedMonthShort = date.toLocaleString('En-US', {month: 'short'})
+  163 |     const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'})
+  164 |
+  165 |     const expectedYear = date.getFullYear()
+  166 |     const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`
+  167 |
+  168 |     let calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  169 |     const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear} `
+  170 |     while(!calendarMonthAndYear?.includes(expectedMonthAndYear)){
+  171 |         await page.locator('nb-calendar-pageable-navigation [data-name="chevron-right"]').click()
+  172 |         calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  173 |     }
+  174 |
+  175 |     await page.locator('[class="day-cell ng-star-inserted"]').getByText(expectedDate, {exact: true}).click() //If we don't use exact: true here, test will be failed because pw will also returns 1, 10, 11, 12, ... in case you getByText('1)
+  176 |     await expect(calendarInput).toHaveValue(dateToAssert)
+  177 | })
+  178 |
+  179 |
+  180 | test('slider', async ({page}) =>{
+  181 |
+  182 |     //Update attribute
+  183 |     // const tempGauge = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger circle')
+  184 |     // await tempGauge.evaluate(node => {
+  185 |     //     node.setAttribute('cx', "50.0902383751836")
+  186 |     //     node.setAttribute('cy', "45.30111643782216")
+  187 |     // })
+  188 |     // await tempGauge.click()
+  189 |
+  190 |     //Mouse event
+  191 |     const tempBox = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger') 
+  192 |     await tempBox.scrollIntoViewIfNeeded()
+  193 |     const box = await tempBox.boundingBox() 
+  194 |     /**
+  195 |      * tempbox is a handle to some DOM element on the page.
+  196 |         boundingBox() gets its position and size: e.g
+  197 |         {
+  198 |         x: 100,
+  199 |         y: 200,
+  200 |         width: 150,
+  201 |         height: 100
+  202 |         }
+  203 |      */
+  204 |     if (box) {
+  205 |         const x = box.x + box.width / 2 
+  206 |         const y = box.y + box.height / 2 //(x, y) now is the center point of element where we do drag-drop
+  207 |         await page.mouse.move(x, y) //move the virtual mouse to the (x,y)
+  208 |         await page.mouse.down() //press the mouse - like start dragging
+  209 |         await page.mouse.move(x+100, y) //move the mouse horizontally 100px to the right, still holding the mouse
+  210 |         await page.mouse.move(x+100, y+100) //move the mouse 100px to the bottom, still holding the mouse
+  211 |         await page.mouse.up() //release the mouse
+  212 |     } else {
+  213 |         throw new Error("Bounding box is null");
+  214 |     }
+  215 | })
+  216 |
+> 217 | test('drag and drop', async ({page}) => {
+      |     ^ Error: browserType.launch: Target page, context or browser has been closed
+  218 |     await page.goto('https://www.globalsqa.com/demo-site/draganddrop/')
+  219 |     const iframe = page.frameLocator('[rel-title="Photo Manager"] iframe')
+  220 |
+  221 |     await iframe.locator('li', {hasText: "High Tatras 2"}).dragTo(iframe.locator('#trash'))
+  222 |
+  223 |     //more precise control
+  224 |     await iframe.locator('li', {hasText: "High Tatras 4"}).hover()
+  225 |     await page.mouse.down()
+  226 |     await iframe.locator('#trash').hover()
+  227 |     await page.mouse.up()
+  228 |
+  229 |     await expect(iframe.locator('#trash li h5')).toHaveText(["High Tatras 2", "High Tatras 4"])
+  230 | })
+  231 |
+  232 |
+```

@@ -1,0 +1,95 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: the first test
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/firstTest.spec.ts:8:5
+
+# Error details
+
+```
+Error: browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Looks like you launched a headed browser without having a XServer running.                     ║
+║ Set either 'headless: true' or use 'xvfb-run <your-playwright-app>' before running Playwright. ║
+║                                                                                                ║
+║ <3 Playwright Team                                                                             ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+Call log:
+  - <launching> /home/runner/.cache/ms-playwright/firefox-1475/firefox/firefox -no-remote -wait-for-browser -foreground -profile /tmp/playwright_firefoxdev_profile-mRyn51 -juggler-pipe --start-maximized -silent
+  - <launched> pid=5919
+  - [pid=5919][err] Error: no DISPLAY environment variable specified
+  - [pid=5919] <process did exit: exitCode=1, signal=null>
+  - [pid=5919] starting temporary directories cleanup
+
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 | test.beforeEach('Run before each test', async ({page}, testInfo) =>{
+   4 |     testInfo.setTimeout(testInfo.timeout + 2000);
+   5 | })
+   6 |
+   7 |
+>  8 | test('the first test', async ({page})=> {
+     |     ^ Error: browserType.launch: Target page, context or browser has been closed
+   9 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+  10 |     // await page.goto('http://localhost:4200')
+  11 |     await page.getByText('Forms').click()
+  12 |     await page.getByText('Form Layouts').click()
+  13 | })
+  14 |
+  15 | test.skip('Locators syntax rules', async ({page}) => {
+  16 |     //by tag name
+  17 |     await page.locator('button').first().click()
+  18 |     //by id
+  19 |     const userInput = page.locator('#userId')
+  20 |     await userInput.waitFor({state: 'attached'})
+  21 |     const text = await userInput.allTextContents()
+  22 |     expect(text).toEqual("Foden")
+  23 |     expect(userInput).toHaveText("Foden", {timeout: 20000})
+  24 |     //by class name
+  25 |     page.locator('.big-button')
+  26 |     //by class name (full)
+  27 |     page.locator('[class="full-width size-medium status-basic shape-rectangle nb-transition"]')
+  28 |     //by attribute
+  29 |     page.locator('[placeholder="Username"]')
+  30 |     //combine different selectors
+  31 |     page.locator('input[placeholder="Email"][nbinput]')
+  32 |     //by xpath (not recommend)
+  33 |     page.locator('//input[@placeholder="Username"]')
+  34 |     //by partial text match
+  35 |     page.locator(':text("Input your")')
+  36 |     //by exact text match
+  37 |     page.locator(':text-is("Input your username")')
+  38 |
+  39 |
+  40 |     //__wait for element
+  41 |     await page.waitForSelector("#userId")
+  42 |
+  43 |     //__wait for particular response
+  44 |     await page.waitForResponse("http://uitestingplayground.com/ajaxdata")
+  45 |
+  46 |     //__wait for network calls to be completed (not recommended)
+  47 |     await page.waitForLoadState("networkidle")
+  48 | })
+  49 |
+  50 | // test.describe('first test suite', () => {
+  51 | //     test('first test in the suite', () => {
+  52 | //         console.log('first test in the suite')
+  53 | //     })
+  54 |
+  55 | //     test('second test in the suite', () => {
+  56 | //         console.log('first test in the suite')
+  57 | //     })
+  58 | // })
+```
