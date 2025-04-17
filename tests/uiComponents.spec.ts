@@ -176,3 +176,56 @@ test('datepicker', async ({page}) => {
     await expect(calendarInput).toHaveValue(dateToAssert)
 })
 
+
+test('slider', async ({page}) =>{
+
+    //Update attribute
+    // const tempGauge = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger circle')
+    // await tempGauge.evaluate(node => {
+    //     node.setAttribute('cx', "50.0902383751836")
+    //     node.setAttribute('cy', "45.30111643782216")
+    // })
+    // await tempGauge.click()
+
+    //Mouse event
+    const tempBox = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger') 
+    await tempBox.scrollIntoViewIfNeeded()
+    const box = await tempBox.boundingBox() 
+    /**
+     * tempbox is a handle to some DOM element on the page.
+        boundingBox() gets its position and size: e.g
+        {
+        x: 100,
+        y: 200,
+        width: 150,
+        height: 100
+        }
+     */
+    if (box) {
+        const x = box.x + box.width / 2 
+        const y = box.y + box.height / 2 //(x, y) now is the center point of element where we do drag-drop
+        await page.mouse.move(x, y) //move the virtual mouse to the (x,y)
+        await page.mouse.down() //press the mouse - like start dragging
+        await page.mouse.move(x+100, y) //move the mouse horizontally 100px to the right, still holding the mouse
+        await page.mouse.move(x+100, y+100) //move the mouse 100px to the bottom, still holding the mouse
+        await page.mouse.up() //release the mouse
+    } else {
+        throw new Error("Bounding box is null");
+    }
+})
+
+test('drag and drop', async ({page}) => {
+    await page.goto('https://www.globalsqa.com/demo-site/draganddrop/')
+    const iframe = page.frameLocator('[rel-title="Photo Manager"] iframe')
+
+    await iframe.locator('li', {hasText: "High Tatras 2"}).dragTo(iframe.locator('#trash'))
+
+    //more precise control
+    await iframe.locator('li', {hasText: "High Tatras 4"}).hover()
+    await page.mouse.down()
+    await iframe.locator('#trash').hover()
+    await page.mouse.up()
+
+    await expect(iframe.locator('#trash li h5')).toHaveText(["High Tatras 2", "High Tatras 4"])
+})
+
