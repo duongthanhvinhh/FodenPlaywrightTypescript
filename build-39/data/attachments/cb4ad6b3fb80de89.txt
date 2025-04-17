@@ -1,0 +1,257 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: the first test
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/firstTest.spec.ts:8:5
+
+# Error details
+
+```
+Error: locator.click: Test timeout of 32000ms exceeded.
+Call log:
+  - waiting for getByText('Forms')
+    - locator resolved to <span class="menu-title ng-tns-c140-2">Forms</span>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/firstTest.spec.ts:11:35
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms":
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text:  Light ON  Roller Shades ON  Wireless Audio ON  Coffee Maker ON
+- list:
+  - listitem:
+    - link "Temperature"
+  - listitem:
+    - link "Humidity"
+- img
+- text: ° 24 Celsius
+- button:
+  - img
+- radio "" [checked]
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text:  Consumed 816 kWh Spent 291 USD
+- button "week"
+- text: Room Management
+- img: Kitchen Bedroom Hallway Living Room
+- heading "Don't Wanna Fight" [level=4]
+- text: Alabama Shakes
+- slider: "0"
+- button:
+  - img
+- button:
+  - img
+- list:
+  - listitem:
+    - link "Contacts"
+  - listitem:
+    - link "Recent"
+- list:
+  - listitem:
+    - text: Nick Jones mobile
+    - img
+  - listitem:
+    - text: Eva Moor home
+    - img
+  - listitem:
+    - text: Jack Williams mobile
+    - img
+  - listitem:
+    - text: Lee Wong mobile
+    - img
+  - listitem:
+    - text: Alan Thompson home
+    - img
+  - listitem:
+    - text: Kate Martinez work
+    - img
+- text: "Solar Energy Consumption 6.421 kWh out of 8.421 kWh UI Kitten UI Kitten is a framework that contains a set of commonly used UI components styled in a similar way. The most awesome thing: you can change themes on the fly by just passing a different set of variables. 100% native. Give our kitten a try!"
+- link:
+  - img
+- link ""
+- link ""
+- link:
+  - img
+- text: Traffic Consumption
+- button "month"
+- text: New York Mon 29 May 20°
+- img
+- text: max 23° min 19° wind 4 km/h hum 87% Sun  17° Mon  19° Tue  22° Wed  21° Security Cameras
+- button ""
+- button:
+  - img
+- text: "Camera #1 Camera #2 Camera #3 Camera #4"
+- img
+- text: Pause
+- img
+- text: Logs
+- img
+- text: Search
+- img
+- text: Setup
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 | test.beforeEach('Run before each test', async ({page}, testInfo) =>{
+   4 |     testInfo.setTimeout(testInfo.timeout + 2000);
+   5 | })
+   6 |
+   7 |
+   8 | test('the first test', async ({page})=> {
+   9 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+  10 |     // await page.goto('http://localhost:4200')
+> 11 |     await page.getByText('Forms').click()
+     |                                   ^ Error: locator.click: Test timeout of 32000ms exceeded.
+  12 |     await page.getByText('Form Layouts').click()
+  13 | })
+  14 |
+  15 | test.skip('Locators syntax rules', async ({page}) => {
+  16 |     //by tag name
+  17 |     await page.locator('button').first().click()
+  18 |     //by id
+  19 |     const userInput = page.locator('#userId')
+  20 |     await userInput.waitFor({state: 'attached'})
+  21 |     const text = await userInput.allTextContents()
+  22 |     expect(text).toEqual("Foden")
+  23 |     expect(userInput).toHaveText("Foden", {timeout: 20000})
+  24 |     //by class name
+  25 |     page.locator('.big-button')
+  26 |     //by class name (full)
+  27 |     page.locator('[class="full-width size-medium status-basic shape-rectangle nb-transition"]')
+  28 |     //by attribute
+  29 |     page.locator('[placeholder="Username"]')
+  30 |     //combine different selectors
+  31 |     page.locator('input[placeholder="Email"][nbinput]')
+  32 |     //by xpath (not recommend)
+  33 |     page.locator('//input[@placeholder="Username"]')
+  34 |     //by partial text match
+  35 |     page.locator(':text("Input your")')
+  36 |     //by exact text match
+  37 |     page.locator(':text-is("Input your username")')
+  38 |
+  39 |
+  40 |     //__wait for element
+  41 |     await page.waitForSelector("#userId")
+  42 |
+  43 |     //__wait for particular response
+  44 |     await page.waitForResponse("http://uitestingplayground.com/ajaxdata")
+  45 |
+  46 |     //__wait for network calls to be completed (not recommended)
+  47 |     await page.waitForLoadState("networkidle")
+  48 | })
+  49 |
+  50 | // test.describe('first test suite', () => {
+  51 | //     test('first test in the suite', () => {
+  52 | //         console.log('first test in the suite')
+  53 | //     })
+  54 |
+  55 | //     test('second test in the suite', () => {
+  56 | //         console.log('first test in the suite')
+  57 | //     })
+  58 | // })
+```
