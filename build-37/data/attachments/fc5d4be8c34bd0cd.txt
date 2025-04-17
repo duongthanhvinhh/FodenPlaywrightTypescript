@@ -1,0 +1,170 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Form layouts page >> Radio buttons
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:33:9
+
+# Error details
+
+```
+Error: browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Looks like you launched a headed browser without having a XServer running.                     ║
+║ Set either 'headless: true' or use 'xvfb-run <your-playwright-app>' before running Playwright. ║
+║                                                                                                ║
+║ <3 Playwright Team                                                                             ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+Call log:
+  - <launching> /home/runner/.cache/ms-playwright/firefox-1475/firefox/firefox -no-remote -wait-for-browser -foreground -profile /tmp/playwright_firefoxdev_profile-0Ix0q1 -juggler-pipe --start-maximized -silent
+  - <launched> pid=6038
+  - [pid=6038][err] Error: no DISPLAY environment variable specified
+  - [pid=6038] <process did exit: exitCode=1, signal=null>
+  - [pid=6038] starting temporary directories cleanup
+
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 |
+   4 | test.beforeEach('Go to test URL', async ({page}) => {
+   5 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+   6 |     // await page.goto('http://localhost:4200')
+   7 | })
+   8 |
+   9 | test.describe('Form layouts page', () => {
+   10 |
+   11 |     test.beforeEach(async ({page}) => {
+   12 |         await page.getByText('Forms').click()
+   13 |         await page.getByText('Form Layouts').click()
+   14 |     })
+   15 |
+   16 |     test('Input field', async ({page}) => {
+   17 |         const usingTheGridEmailInput = page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"})
+   18 |         await usingTheGridEmailInput.fill('test@test.com')
+   19 |         await usingTheGridEmailInput.clear()
+   20 |         await usingTheGridEmailInput.pressSequentially('test@test.com')
+   21 |         await usingTheGridEmailInput.clear()
+   22 |         await usingTheGridEmailInput.pressSequentially('test@test.com', {delay: 500})
+   23 |
+   24 |         //generic assertion
+   25 |         const inputValue = await usingTheGridEmailInput.inputValue()
+   26 |         expect(inputValue).toEqual('test@test.com')
+   27 |
+   28 |         //locator assertion
+   29 |         await expect(usingTheGridEmailInput).toHaveValue('test@test.com')
+   30 |
+   31 |     })
+   32 |
+>  33 |     test('Radio buttons', async ({page}) => {
+      |         ^ Error: browserType.launch: Target page, context or browser has been closed
+   34 |         const usingTheGridForm = page.locator('nb-card', {hasText: "Using the Grid"})
+   35 |         // await usingTheGridForm.getByLabel('Option 1').check({force: true})
+   36 |         // or
+   37 |         await usingTheGridForm.getByRole('radio', {name: 'Option 1'}).check({force: true})
+   38 |         const radioStatus = usingTheGridForm.getByRole('radio', {name: 'Option 1'}).isChecked()
+   39 |         expect(radioStatus).toBeTruthy()
+   40 |
+   41 |         expect(await usingTheGridForm.getByRole('radio', {name: 'Option 2'}).isChecked()).toBeFalsy()
+   42 |     })
+   43 |
+   44 | })
+   45 |
+   46 | test('checkboxes', async ({page}) => {
+   47 |     await page.getByText('Modal & Overlays').click()
+   48 |     await page.getByText('Toastr').click()
+   49 |
+   50 |     await page.getByRole('checkbox', {name: "Hide on click"}).click({force: true}) //If the checkbox is already checked, click will uncheck the checkbox
+   51 |     await page.getByRole('checkbox', {name: "Hide on click"}).check({force: true}) //If the checkbox is already checked, ckeck() will do nothing
+   52 |     await page.getByRole('checkbox', {name: "Hide on click"}).uncheck({force: true}) //If the checkbox is already unchecked, uncheck() will do nothing
+   53 |
+   54 |     const allBoxes = page.getByRole('checkbox')
+   55 |     for(const box of await allBoxes.all()){
+   56 |         await box.check({force: true})
+   57 |         expect(await box.isChecked()).toBeTruthy()
+   58 |     }
+   59 | })
+   60 |
+   61 | test('lists and dropdowns', async ({page}) => {
+   62 |     const dropdownMenu = page.locator('ngx-header nb-select')
+   63 |     await dropdownMenu.click()
+   64 |     page.getByRole('list') //Use it when the list has the ul tag
+   65 |     page.getByRole('listitem') //Use it when the list has li tag
+   66 |
+   67 |     // const optionList = page.getByRole('list').locator('nb-option') //Not widely used
+   68 |     const optionList = page.locator('nb-option-list nb-option')
+   69 |     await expect(optionList).toHaveText(["Light", "Dark", "Cosmic", "Corporate"])
+   70 |     await optionList.filter({hasText: "Cosmic"}).click()
+   71 |
+   72 |     //verify color of element
+   73 |     const header = page.locator('nb-layout-header')
+   74 |     await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+   75 |
+   76 |     const colors = {
+   77 |         "Light": "rgb(255, 255, 255)",
+   78 |         "Dark": "rgb(34, 43, 69)",
+   79 |         "Cosmic": "rgb(50, 50, 89)",
+   80 |         "Corporate": "rgb(255, 255, 255)"
+   81 |     }
+   82 |
+   83 |     await dropdownMenu.click()
+   84 |     for(const color in colors){
+   85 |         await optionList.filter({hasText: color}).click()
+   86 |         await expect(header).toHaveCSS('background-color', colors[color])
+   87 |         if(color != "Corporate"){
+   88 |             await dropdownMenu.click()
+   89 |         }
+   90 |     }
+   91 |
+   92 | })
+   93 |
+   94 | test('tooltips', async ({page}) => {
+   95 |     await page.getByText('Modal & Overlays').click()
+   96 |     await page.getByText('Tooltip').click()
+   97 |
+   98 |     const tooltipCard = page.locator('nb-card', {hasText: 'Tooltip Placements'})
+   99 |     await tooltipCard.getByRole('button', {name: "Top"}).hover()
+  100 |
+  101 |     const tooltip = await page.locator('nb-tooltip').textContent()
+  102 |     expect(tooltip).toEqual('This is a tooltip')
+  103 |
+  104 |
+  105 |     page.getByRole('tooltip') //Only use if you have a role tooltip created
+  106 | })
+  107 |
+  108 | test('dialogs', async ({page}) => {
+  109 |     await page.getByText('Tables & Data').click()
+  110 |     await page.getByText('Smart Table').click()
+  111 |
+  112 |     //We need to register the action we want to treat with dialog before triggering the dialog
+  113 |     page.on('dialog', dialog => {
+  114 |         expect(dialog.message()).toEqual('Are you sure you want to delete?')
+  115 |         dialog.accept()
+  116 |     })
+  117 |
+  118 |     await page.getByRole('table').locator('tr', {hasText: "mdo@gmail.com"}).locator('.nb-trash').click()
+  119 |     await expect(page.locator('table tr').first()).not.toHaveText("mdo@gmail.com")
+  120 | })
+  121 |
+  122 | test('tables', async ({page}) => {
+  123 |     await page.getByText('Tables & Data').click()
+  124 |     await page.getByText('Smart Table').click()
+  125 |
+  126 |     //Get any row by text in row
+  127 |     const targetRow = page.getByRole('row', {name: 'twitter@outlook.com'})
+  128 |     await targetRow.locator('.nb-edit').click()
+  129 |     await page.locator('input-editor').getByPlaceholder('Age').clear()
+  130 |     await page.locator('input-editor').getByPlaceholder('Age').fill('35')
+  131 |     await page.locator('.nb-checkmark').click()
+  132 |
+  133 |     //test filter of the table
+```
