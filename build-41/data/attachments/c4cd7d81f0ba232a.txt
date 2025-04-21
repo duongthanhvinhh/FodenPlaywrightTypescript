@@ -1,0 +1,315 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Form layouts page >> Radio buttons
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:37:9
+
+# Error details
+
+```
+Error: locator.click: Test timeout of 32000ms exceeded.
+Call log:
+  - waiting for getByText('Forms')
+    - locator resolved to <span class="menu-title ng-tns-c140-2">Forms</span>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    53 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:16:39
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms":
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text:  Light ON  Roller Shades ON  Wireless Audio ON  Coffee Maker ON
+- list:
+  - listitem:
+    - link "Temperature"
+  - listitem:
+    - link "Humidity"
+- img
+- text: ° 24 Celsius
+- button:
+  - img
+- radio "" [checked]
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text:  Consumed 816 kWh Spent 291 USD
+- button "week"
+- text: Room Management
+- img: Kitchen Bedroom Hallway Living Room
+- heading "Harder" [level=4]
+- text: Daft Punk
+- slider: "0"
+- button:
+  - img
+- button:
+  - img
+- list:
+  - listitem:
+    - link "Contacts"
+  - listitem:
+    - link "Recent"
+- list:
+  - listitem:
+    - text: Foden Duong mobile
+    - img
+  - listitem:
+    - text: Foden Duong home
+    - img
+  - listitem:
+    - text: Vinh Duong mobile
+    - img
+  - listitem:
+    - text: Foden Automation mobile
+    - img
+  - listitem:
+    - text: Vĩnh Tester home
+    - img
+  - listitem:
+    - text: DT Vinh work
+    - img
+- text: "Solar Energy Consumption 6.421 kWh out of 8.421 kWh UI Kitten UI Kitten is a framework that contains a set of commonly used UI components styled in a similar way. The most awesome thing: you can change themes on the fly by just passing a different set of variables. 100% native. Give our kitten a try!"
+- link:
+  - img
+- link ""
+- link ""
+- link:
+  - img
+- text: Traffic Consumption
+- button "month"
+- text: New York Mon 29 May 20°
+- img
+- text: max 23° min 19° wind 4 km/h hum 87% Sun  17° Mon  19° Tue  22° Wed  21° Security Cameras
+- button ""
+- button:
+  - img
+- text: "Camera #1 Camera #2 Camera #3 Camera #4"
+- img
+- text: Pause
+- img
+- text: Logs
+- img
+- text: Search
+- img
+- text: Setup
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 |
+   4 | test.beforeEach('Go to test URL', async ({page}) => {
+   5 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+   6 |     // await page.goto('http://localhost:4200')
+   7 | })
+   8 |
+   9 | test.beforeEach('Run before each test', async ({page}, testInfo) =>{
+   10 |     testInfo.setTimeout(testInfo.timeout + 2000);
+   11 | })
+   12 |
+   13 | test.describe('Form layouts page', () => {
+   14 |
+   15 |     test.beforeEach(async ({page}) => {
+>  16 |         await page.getByText('Forms').click()
+      |                                       ^ Error: locator.click: Test timeout of 32000ms exceeded.
+   17 |         await page.getByText('Form Layouts').click()
+   18 |     })
+   19 |
+   20 |     test('Input field', async ({page}) => {
+   21 |         const usingTheGridEmailInput = page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"})
+   22 |         await usingTheGridEmailInput.fill('test@test.com')
+   23 |         await usingTheGridEmailInput.clear()
+   24 |         await usingTheGridEmailInput.pressSequentially('test@test.com')
+   25 |         await usingTheGridEmailInput.clear()
+   26 |         await usingTheGridEmailInput.pressSequentially('test@test.com', {delay: 500})
+   27 |
+   28 |         //generic assertion
+   29 |         const inputValue = await usingTheGridEmailInput.inputValue()
+   30 |         expect(inputValue).toEqual('test@test.com')
+   31 |
+   32 |         //locator assertion
+   33 |         await expect(usingTheGridEmailInput).toHaveValue('test@test.com')
+   34 |
+   35 |     })
+   36 |
+   37 |     test('Radio buttons', async ({page}) => {
+   38 |         const usingTheGridForm = page.locator('nb-card', {hasText: "Using the Grid"})
+   39 |         // await usingTheGridForm.getByLabel('Option 1').check({force: true})
+   40 |         // or
+   41 |         await usingTheGridForm.getByRole('radio', {name: 'Option 1'}).check({force: true})
+   42 |         const radioStatus = usingTheGridForm.getByRole('radio', {name: 'Option 1'}).isChecked()
+   43 |         expect(radioStatus).toBeTruthy()
+   44 |
+   45 |         expect(await usingTheGridForm.getByRole('radio', {name: 'Option 2'}).isChecked()).toBeFalsy()
+   46 |     })
+   47 |
+   48 | })
+   49 |
+   50 | test('checkboxes', async ({page}) => {
+   51 |     await page.getByText('Modal & Overlays').click()
+   52 |     await page.getByText('Toastr').click()
+   53 |
+   54 |     await page.getByRole('checkbox', {name: "Hide on click"}).click({force: true}) //If the checkbox is already checked, click will uncheck the checkbox
+   55 |     await page.getByRole('checkbox', {name: "Hide on click"}).check({force: true}) //If the checkbox is already checked, ckeck() will do nothing
+   56 |     await page.getByRole('checkbox', {name: "Hide on click"}).uncheck({force: true}) //If the checkbox is already unchecked, uncheck() will do nothing
+   57 |
+   58 |     const allBoxes = page.getByRole('checkbox')
+   59 |     for(const box of await allBoxes.all()){
+   60 |         await box.check({force: true})
+   61 |         expect(await box.isChecked()).toBeTruthy()
+   62 |     }
+   63 | })
+   64 |
+   65 | test('lists and dropdowns', async ({page}) => {
+   66 |     const dropdownMenu = page.locator('ngx-header nb-select')
+   67 |     await dropdownMenu.click()
+   68 |     page.getByRole('list') //Use it when the list has the ul tag
+   69 |     page.getByRole('listitem') //Use it when the list has li tag
+   70 |
+   71 |     // const optionList = page.getByRole('list').locator('nb-option') //Not widely used
+   72 |     const optionList = page.locator('nb-option-list nb-option')
+   73 |     await expect(optionList).toHaveText(["Light", "Dark", "Cosmic", "Corporate"])
+   74 |     await optionList.filter({hasText: "Cosmic"}).click()
+   75 |
+   76 |     //verify color of element
+   77 |     const header = page.locator('nb-layout-header')
+   78 |     await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+   79 |
+   80 |     const colors = {
+   81 |         "Light": "rgb(255, 255, 255)",
+   82 |         "Dark": "rgb(34, 43, 69)",
+   83 |         "Cosmic": "rgb(50, 50, 89)",
+   84 |         "Corporate": "rgb(255, 255, 255)"
+   85 |     }
+   86 |
+   87 |     await dropdownMenu.click()
+   88 |     for(const color in colors){
+   89 |         await optionList.filter({hasText: color}).click()
+   90 |         await expect(header).toHaveCSS('background-color', colors[color])
+   91 |         if(color != "Corporate"){
+   92 |             await dropdownMenu.click()
+   93 |         }
+   94 |     }
+   95 |
+   96 | })
+   97 |
+   98 | test('tooltips', async ({page}) => {
+   99 |     await page.getByText('Modal & Overlays').click()
+  100 |     await page.getByText('Tooltip').click()
+  101 |
+  102 |     const tooltipCard = page.locator('nb-card', {hasText: 'Tooltip Placements'})
+  103 |     await tooltipCard.getByRole('button', {name: "Top"}).hover()
+  104 |
+  105 |     const tooltip = await page.locator('nb-tooltip').textContent()
+  106 |     expect(tooltip).toEqual('This is a tooltip')
+  107 |
+  108 |
+  109 |     page.getByRole('tooltip') //Only use if you have a role tooltip created
+  110 | })
+  111 |
+  112 | test('dialogs', async ({page}) => {
+  113 |     await page.getByText('Tables & Data').click()
+  114 |     await page.getByText('Smart Table').click()
+  115 |
+  116 |     //We need to register the action we want to treat with dialog before triggering the dialog
+```

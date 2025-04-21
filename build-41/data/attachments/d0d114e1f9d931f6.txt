@@ -1,0 +1,398 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: tooltips
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:98:5
+
+# Error details
+
+```
+Error: locator.click: Test timeout of 32000ms exceeded.
+Call log:
+  - waiting for getByText('Modal & Overlays')
+    - locator resolved to <span class="menu-title ng-tns-c140-5">Modal & Overlays</span>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    57 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/uiComponents.spec.ts:99:46
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms":
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text:  Light ON  Roller Shades ON  Wireless Audio ON  Coffee Maker ON
+- list:
+  - listitem:
+    - link "Temperature"
+  - listitem:
+    - link "Humidity"
+- img
+- text: ° 24 Celsius
+- button:
+  - img
+- radio "" [checked]
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text:  Consumed 816 kWh Spent 291 USD
+- button "week"
+- text: Room Management
+- img: Kitchen Bedroom Hallway Living Room
+- heading "Harder" [level=4]
+- text: Daft Punk
+- slider: "0"
+- button:
+  - img
+- button:
+  - img
+- list:
+  - listitem:
+    - link "Contacts"
+  - listitem:
+    - link "Recent"
+- list:
+  - listitem:
+    - text: Foden Duong mobile
+    - img
+  - listitem:
+    - text: Foden Duong home
+    - img
+  - listitem:
+    - text: Vinh Duong mobile
+    - img
+  - listitem:
+    - text: Foden Automation mobile
+    - img
+  - listitem:
+    - text: Vĩnh Tester home
+    - img
+  - listitem:
+    - text: DT Vinh work
+    - img
+- text: "Solar Energy Consumption 6.421 kWh out of 8.421 kWh UI Kitten UI Kitten is a framework that contains a set of commonly used UI components styled in a similar way. The most awesome thing: you can change themes on the fly by just passing a different set of variables. 100% native. Give our kitten a try!"
+- link:
+  - img
+- link ""
+- link ""
+- link:
+  - img
+- text: Traffic Consumption
+- button "month"
+- text: New York Mon 29 May 20°
+- img
+- text: max 23° min 19° wind 4 km/h hum 87% Sun  17° Mon  19° Tue  22° Wed  21° Security Cameras
+- button ""
+- button:
+  - img
+- text: "Camera #1 Camera #2 Camera #3 Camera #4"
+- img
+- text: Pause
+- img
+- text: Logs
+- img
+- text: Search
+- img
+- text: Setup
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import {expect, test} from '@playwright/test'
+   2 |
+   3 |
+   4 | test.beforeEach('Go to test URL', async ({page}) => {
+   5 |     await page.goto('https://foden-testing-application.vercel.app/pages/iot-dashboard')
+   6 |     // await page.goto('http://localhost:4200')
+   7 | })
+   8 |
+   9 | test.beforeEach('Run before each test', async ({page}, testInfo) =>{
+   10 |     testInfo.setTimeout(testInfo.timeout + 2000);
+   11 | })
+   12 |
+   13 | test.describe('Form layouts page', () => {
+   14 |
+   15 |     test.beforeEach(async ({page}) => {
+   16 |         await page.getByText('Forms').click()
+   17 |         await page.getByText('Form Layouts').click()
+   18 |     })
+   19 |
+   20 |     test('Input field', async ({page}) => {
+   21 |         const usingTheGridEmailInput = page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"})
+   22 |         await usingTheGridEmailInput.fill('test@test.com')
+   23 |         await usingTheGridEmailInput.clear()
+   24 |         await usingTheGridEmailInput.pressSequentially('test@test.com')
+   25 |         await usingTheGridEmailInput.clear()
+   26 |         await usingTheGridEmailInput.pressSequentially('test@test.com', {delay: 500})
+   27 |
+   28 |         //generic assertion
+   29 |         const inputValue = await usingTheGridEmailInput.inputValue()
+   30 |         expect(inputValue).toEqual('test@test.com')
+   31 |
+   32 |         //locator assertion
+   33 |         await expect(usingTheGridEmailInput).toHaveValue('test@test.com')
+   34 |
+   35 |     })
+   36 |
+   37 |     test('Radio buttons', async ({page}) => {
+   38 |         const usingTheGridForm = page.locator('nb-card', {hasText: "Using the Grid"})
+   39 |         // await usingTheGridForm.getByLabel('Option 1').check({force: true})
+   40 |         // or
+   41 |         await usingTheGridForm.getByRole('radio', {name: 'Option 1'}).check({force: true})
+   42 |         const radioStatus = usingTheGridForm.getByRole('radio', {name: 'Option 1'}).isChecked()
+   43 |         expect(radioStatus).toBeTruthy()
+   44 |
+   45 |         expect(await usingTheGridForm.getByRole('radio', {name: 'Option 2'}).isChecked()).toBeFalsy()
+   46 |     })
+   47 |
+   48 | })
+   49 |
+   50 | test('checkboxes', async ({page}) => {
+   51 |     await page.getByText('Modal & Overlays').click()
+   52 |     await page.getByText('Toastr').click()
+   53 |
+   54 |     await page.getByRole('checkbox', {name: "Hide on click"}).click({force: true}) //If the checkbox is already checked, click will uncheck the checkbox
+   55 |     await page.getByRole('checkbox', {name: "Hide on click"}).check({force: true}) //If the checkbox is already checked, ckeck() will do nothing
+   56 |     await page.getByRole('checkbox', {name: "Hide on click"}).uncheck({force: true}) //If the checkbox is already unchecked, uncheck() will do nothing
+   57 |
+   58 |     const allBoxes = page.getByRole('checkbox')
+   59 |     for(const box of await allBoxes.all()){
+   60 |         await box.check({force: true})
+   61 |         expect(await box.isChecked()).toBeTruthy()
+   62 |     }
+   63 | })
+   64 |
+   65 | test('lists and dropdowns', async ({page}) => {
+   66 |     const dropdownMenu = page.locator('ngx-header nb-select')
+   67 |     await dropdownMenu.click()
+   68 |     page.getByRole('list') //Use it when the list has the ul tag
+   69 |     page.getByRole('listitem') //Use it when the list has li tag
+   70 |
+   71 |     // const optionList = page.getByRole('list').locator('nb-option') //Not widely used
+   72 |     const optionList = page.locator('nb-option-list nb-option')
+   73 |     await expect(optionList).toHaveText(["Light", "Dark", "Cosmic", "Corporate"])
+   74 |     await optionList.filter({hasText: "Cosmic"}).click()
+   75 |
+   76 |     //verify color of element
+   77 |     const header = page.locator('nb-layout-header')
+   78 |     await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+   79 |
+   80 |     const colors = {
+   81 |         "Light": "rgb(255, 255, 255)",
+   82 |         "Dark": "rgb(34, 43, 69)",
+   83 |         "Cosmic": "rgb(50, 50, 89)",
+   84 |         "Corporate": "rgb(255, 255, 255)"
+   85 |     }
+   86 |
+   87 |     await dropdownMenu.click()
+   88 |     for(const color in colors){
+   89 |         await optionList.filter({hasText: color}).click()
+   90 |         await expect(header).toHaveCSS('background-color', colors[color])
+   91 |         if(color != "Corporate"){
+   92 |             await dropdownMenu.click()
+   93 |         }
+   94 |     }
+   95 |
+   96 | })
+   97 |
+   98 | test('tooltips', async ({page}) => {
+>  99 |     await page.getByText('Modal & Overlays').click()
+      |                                              ^ Error: locator.click: Test timeout of 32000ms exceeded.
+  100 |     await page.getByText('Tooltip').click()
+  101 |
+  102 |     const tooltipCard = page.locator('nb-card', {hasText: 'Tooltip Placements'})
+  103 |     await tooltipCard.getByRole('button', {name: "Top"}).hover()
+  104 |
+  105 |     const tooltip = await page.locator('nb-tooltip').textContent()
+  106 |     expect(tooltip).toEqual('This is a tooltip')
+  107 |
+  108 |
+  109 |     page.getByRole('tooltip') //Only use if you have a role tooltip created
+  110 | })
+  111 |
+  112 | test('dialogs', async ({page}) => {
+  113 |     await page.getByText('Tables & Data').click()
+  114 |     await page.getByText('Smart Table').click()
+  115 |
+  116 |     //We need to register the action we want to treat with dialog before triggering the dialog
+  117 |     page.on('dialog', dialog => {
+  118 |         expect(dialog.message()).toEqual('Are you sure you want to delete?')
+  119 |         dialog.accept()
+  120 |     })
+  121 |
+  122 |     await page.getByRole('table').locator('tr', {hasText: "mdo@gmail.com"}).locator('.nb-trash').click()
+  123 |     await expect(page.locator('table tr').first()).not.toHaveText("mdo@gmail.com")
+  124 | })
+  125 |
+  126 | test('tables', async ({page}) => {
+  127 |     await page.getByText('Tables & Data').click()
+  128 |     await page.getByText('Smart Table').click()
+  129 |
+  130 |     //Get any row by text in row
+  131 |     const targetRow = page.getByRole('row', {name: 'twitter@outlook.com'})
+  132 |     await targetRow.locator('.nb-edit').click()
+  133 |     await page.locator('input-editor').getByPlaceholder('Age').clear()
+  134 |     await page.locator('input-editor').getByPlaceholder('Age').fill('35')
+  135 |     await page.locator('.nb-checkmark').click()
+  136 |
+  137 |     //test filter of the table
+  138 |     const ages = ["20", "30", "40", "200"]
+  139 |     for(let age of ages){
+  140 |         await page.locator('input-filter').getByPlaceholder('Age').clear()
+  141 |         await page.locator('input-filter').getByPlaceholder('Age').fill(age)
+  142 |         await page.waitForTimeout(5000)
+  143 |
+  144 |         const ageRows = page.locator('tbody tr')
+  145 |
+  146 |         for(let row of await ageRows.all()){
+  147 |             const cellValue = await row.locator('td').last().textContent()
+  148 |             if(age == "200"){
+  149 |                 expect(await page.getByRole('table').textContent()).toContain('No data found')
+  150 |             } else {
+  151 |                 expect(cellValue).toEqual(age)
+  152 |             }
+  153 |         }
+  154 |     }
+  155 | })
+  156 |
+  157 | test('datepicker', async ({page}) => {
+  158 |     await page.getByText('Forms').click()
+  159 |     await page.getByText('Datepicker').click()
+  160 |     const calendarInput = page.getByPlaceholder('Form Picker')
+  161 |     await calendarInput.click()
+  162 |
+  163 |     let date = new Date()
+  164 |     date.setDate(date.getDate() + 7)
+  165 |     const expectedDate = date.getDate().toString()
+  166 |     const expectedMonthShort = date.toLocaleString('En-US', {month: 'short'})
+  167 |     const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'})
+  168 |
+  169 |     const expectedYear = date.getFullYear()
+  170 |     const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`
+  171 |
+  172 |     let calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  173 |     const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear} `
+  174 |     while(!calendarMonthAndYear?.includes(expectedMonthAndYear)){
+  175 |         await page.locator('nb-calendar-pageable-navigation [data-name="chevron-right"]').click()
+  176 |         calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  177 |     }
+  178 |
+  179 |     await page.locator('[class="day-cell ng-star-inserted"]').getByText(expectedDate, {exact: true}).click() //If we don't use exact: true here, test will be failed because pw will also returns 1, 10, 11, 12, ... in case you getByText('1)
+  180 |     await expect(calendarInput).toHaveValue(dateToAssert)
+  181 | })
+  182 |
+  183 |
+  184 | test('slider', async ({page}) =>{
+  185 |
+  186 |     //Update attribute
+  187 |     // const tempGauge = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger circle')
+  188 |     // await tempGauge.evaluate(node => {
+  189 |     //     node.setAttribute('cx', "50.0902383751836")
+  190 |     //     node.setAttribute('cy', "45.30111643782216")
+  191 |     // })
+  192 |     // await tempGauge.click()
+  193 |
+  194 |     //Mouse event
+  195 |     const tempBox = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger') 
+  196 |     await tempBox.scrollIntoViewIfNeeded()
+  197 |     const box = await tempBox.boundingBox() 
+  198 |     /**
+  199 |      * tempbox is a handle to some DOM element on the page.
+```

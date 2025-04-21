@@ -1,0 +1,328 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: first test using page object
+- Location: /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/usePageObjects.spec.ts:9:5
+
+# Error details
+
+```
+Error: locator.waitFor: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByText('Forms', { exact: true }) to be visible
+    62 × locator resolved to hidden <span class="menu-title ng-tns-c140-2">Forms</span>
+
+    at NavigationPage.navigateToMenu (/home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/page-objects/navigationPage.ts:59:24)
+    at NavigationPage.formLayoutsPage (/home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/page-objects/navigationPage.ts:73:20)
+    at /home/runner/work/FodenPlaywrightTypescript/FodenPlaywrightTypescript/tests/usePageObjects.spec.ts:11:24
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms":
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text:  Light ON  Roller Shades ON  Wireless Audio ON  Coffee Maker ON
+- list:
+  - listitem:
+    - link "Temperature"
+  - listitem:
+    - link "Humidity"
+- img
+- text: ° 24 Celsius
+- button:
+  - img
+- radio "" [checked]
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text: 
+- radio ""
+- text:  Consumed 816 kWh Spent 291 USD
+- button "week"
+- text: Room Management
+- img: Kitchen Bedroom Hallway Living Room
+- heading "Harder" [level=4]
+- text: Daft Punk
+- slider: "0"
+- button:
+  - img
+- button:
+  - img
+- list:
+  - listitem:
+    - link "Contacts"
+  - listitem:
+    - link "Recent"
+- list:
+  - listitem:
+    - text: Foden Duong mobile
+    - img
+  - listitem:
+    - text: Foden Duong home
+    - img
+  - listitem:
+    - text: Vinh Duong mobile
+    - img
+  - listitem:
+    - text: Foden Automation mobile
+    - img
+  - listitem:
+    - text: Vĩnh Tester home
+    - img
+  - listitem:
+    - text: DT Vinh work
+    - img
+- text: "Solar Energy Consumption 6.421 kWh out of 8.421 kWh UI Kitten UI Kitten is a framework that contains a set of commonly used UI components styled in a similar way. The most awesome thing: you can change themes on the fly by just passing a different set of variables. 100% native. Give our kitten a try!"
+- link:
+  - img
+- link ""
+- link ""
+- link:
+  - img
+- text: Traffic Consumption
+- button "month"
+- text: New York Mon 29 May 20°
+- img
+- text: max 23° min 19° wind 4 km/h hum 87% Sun  17° Mon  19° Tue  22° Wed  21° Security Cameras
+- button ""
+- button:
+  - img
+- text: "Camera #1 Camera #2 Camera #3 Camera #4"
+- img
+- text: Pause
+- img
+- text: Logs
+- img
+- text: Search
+- img
+- text: Setup
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+```
+
+# Test source
+
+```ts
+   1 | import { Page, Locator } from "@playwright/test";
+   2 | import { FormLayoutsPage } from "./FormLayoutsPage";
+   3 | import { DatePickerPage } from "./DatePickerPage";
+   4 | import { DialogPage } from "./DialogPage";
+   5 | import { WindowPage } from "./WindowPage";
+   6 | import { PopoverPage } from "./PopoverPage";
+   7 | import { ToastrPage } from "./ToastrPage";
+   8 | import { TooltipPage } from "./TooltipPage";
+   9 | import { CalendarPage } from "./CalendarPage";
+   10 | import { EchartsPage } from "./EchartsPage";
+   11 | import { SmartTablePage } from "./SmartTablePage";
+   12 | import { TreeGridPage } from "./TreeGridPage";
+   13 | import { LoginPage } from "./LoginPage";
+   14 | import { RegisterPage } from "./RegisterPage";
+   15 | import { ResetPasswordPage } from "./ResetPasswordPage";
+   16 | import { RequestPasswordPage } from "./RequestPasswordPage";
+   17 |
+   18 | enum Menu {
+   19 |     Forms = 'Forms',
+   20 |     ModalOverlays = 'Modal & Overlays',
+   21 |     ExtraComponents = 'Extra Components',
+   22 |     TablesData = 'Tables & Data',
+   23 |     Auth = 'Auth'
+   24 | }
+   25 |
+   26 | enum SubMenu {
+   27 |     FormLayouts = 'Form Layouts',
+   28 |     Datepicker = 'Datepicker',
+   29 |     Dialog = 'Dialog',
+   30 |     Window = 'Window',
+   31 |     Popover = 'Popover',
+   32 |     Toastr = 'Toastr',
+   33 |     Tooltip = 'Tooltip',
+   34 |     Calendar = 'Calendar',
+   35 |     Echarts = 'Echarts',
+   36 |     SmartTable = 'Smart Table',
+   37 |     TreeGrid = 'Tree Grid',
+   38 |     Login = 'Login',
+   39 |     Register = 'Register',
+   40 |     RequestPassword = 'Request Password',
+   41 |     ResetPassword = 'Reset Password'
+   42 | }
+   43 |
+   44 | export class NavigationPage {
+   45 |     constructor(private readonly page: Page) {}
+   46 |
+   47 |     // Locators
+   48 |     private menuLocator(menu: Menu): Locator {
+   49 |         return this.page.getByText(menu, { exact: true });
+   50 |     }
+   51 |
+   52 |     private subMenuLocator(subMenu: SubMenu): Locator {
+   53 |         return this.page.getByText(subMenu, { exact: true });
+   54 |     }
+   55 |
+   56 |     // Navigation logic
+   57 |     private async navigateToMenu(menu: Menu, subMenu: SubMenu) {
+   58 |         const menuItem = this.menuLocator(menu);
+>  59 |         await menuItem.waitFor({ state: 'visible' });
+      |                        ^ Error: locator.waitFor: Test timeout of 30000ms exceeded.
+   60 |         await menuItem.scrollIntoViewIfNeeded();
+   61 |         const isMenuItemCollapsed = await menuItem.getAttribute('aria-expanded') === 'false';
+   62 |         if (isMenuItemCollapsed) {
+   63 |             await menuItem.click();
+   64 |         }
+   65 |         const subMenuItem = this.subMenuLocator(subMenu);
+   66 |         await subMenuItem.waitFor({ state: 'visible' });
+   67 |         await subMenuItem.scrollIntoViewIfNeeded();
+   68 |         await subMenuItem.click();
+   69 |     }
+   70 |
+   71 |     // Forms section
+   72 |     async formLayoutsPage() {
+   73 |         await this.navigateToMenu(Menu.Forms, SubMenu.FormLayouts);
+   74 |         return new FormLayoutsPage(this.page)
+   75 |     }
+   76 |     async datePickerPage() {
+   77 |         await this.navigateToMenu(Menu.Forms, SubMenu.Datepicker);
+   78 |         return new DatePickerPage(this.page)
+   79 |     }
+   80 |
+   81 |     // Modal & Overlays section
+   82 |     async dialogPage() {
+   83 |         await this.navigateToMenu(Menu.ModalOverlays, SubMenu.Dialog);
+   84 |         return new DialogPage(this.page)
+   85 |     }
+   86 |     async windowPage() {
+   87 |         await this.navigateToMenu(Menu.ModalOverlays, SubMenu.Window);
+   88 |         return new WindowPage(this.page)
+   89 |     }
+   90 |     async popoverPage() {
+   91 |         await this.navigateToMenu(Menu.ModalOverlays, SubMenu.Popover);
+   92 |         return new PopoverPage(this.page)
+   93 |     }
+   94 |     async toastrPage() {
+   95 |         await this.navigateToMenu(Menu.ModalOverlays, SubMenu.Toastr);
+   96 |         return new ToastrPage(this.page)
+   97 |     }
+   98 |     async tooltipPage() {
+   99 |         await this.navigateToMenu(Menu.ModalOverlays, SubMenu.Tooltip);
+  100 |         return new TooltipPage(this.page)
+  101 |     }
+  102 |
+  103 |     // Extra Components
+  104 |     async calendarPage() {
+  105 |         await this.navigateToMenu(Menu.ExtraComponents, SubMenu.Calendar);
+  106 |         return new CalendarPage(this.page)
+  107 |     }
+  108 |     async echartsPage() {
+  109 |         await this.navigateToMenu(Menu.ExtraComponents, SubMenu.Echarts);
+  110 |         return new EchartsPage(this.page)
+  111 |     }
+  112 |
+  113 |     // Tables & Data section
+  114 |     async smartTablePage() {
+  115 |         await this.navigateToMenu(Menu.TablesData, SubMenu.SmartTable);
+  116 |         return new SmartTablePage(this.page)
+  117 |     }
+  118 |     async treeGridPage() {
+  119 |         await this.navigateToMenu(Menu.TablesData, SubMenu.TreeGrid);
+  120 |         return new TreeGridPage(this.page)
+  121 |     }
+  122 |
+  123 |     // Auth section (Note: If you're already in any page under Auth section, cannot use the method navigateToMenu() again because the side bar is hidden in these pages)
+  124 |     async loginPage() {
+  125 |         await this.navigateToMenu(Menu.Auth, SubMenu.Login);
+  126 |         return new LoginPage(this.page)
+  127 |     }
+  128 |     async registerPage() {
+  129 |         await this.navigateToMenu(Menu.Auth, SubMenu.Register);
+  130 |         return new RegisterPage(this.page)
+  131 |     }
+  132 |     async requestPasswordPage() {
+  133 |         await this.navigateToMenu(Menu.Auth, SubMenu.RequestPassword);
+  134 |         return new RequestPasswordPage(this.page)
+  135 |     }
+  136 |     async resetPasswordPage() {
+  137 |         await this.navigateToMenu(Menu.Auth, SubMenu.ResetPassword);
+  138 |         return new ResetPasswordPage(this.page)
+  139 |     }
+  140 | }
+```
