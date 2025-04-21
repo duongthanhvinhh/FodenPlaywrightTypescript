@@ -13,8 +13,12 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.51.1",
+    "@types/exceljs": "^0.5.3",
     "@types/node": "^22.14.1",
     "allure-commandline": "^2.33.0",
     "allure-playwright": "^3.2.1"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
   }
 }
