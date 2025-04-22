@@ -14,6 +14,7 @@ import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";
 import { ResetPasswordPage } from "./ResetPasswordPage";
 import { RequestPasswordPage } from "./RequestPasswordPage";
+import { BasePage } from "./BasePage";
 
 enum Menu {
     Forms = 'Forms',
@@ -41,8 +42,10 @@ enum SubMenu {
     ResetPassword = 'Reset Password'
 }
 
-export class NavigationPage {
-    constructor(private readonly page: Page) {}
+export class NavigationPage extends BasePage {
+    constructor(page: Page) {
+        super(page);
+    }
 
     // Locators
     private menuLocator(menu: Menu): Locator {
@@ -56,16 +59,16 @@ export class NavigationPage {
     // Navigation logic
     private async navigateToMenu(menu: Menu, subMenu: SubMenu) {
         const menuItem = this.menuLocator(menu);
-        await menuItem.waitFor({ state: 'visible' });
+        await this.waitForElementVisible(menuItem)
         await menuItem.scrollIntoViewIfNeeded();
         const isMenuItemCollapsed = await menuItem.getAttribute('aria-expanded') === 'false';
         if (isMenuItemCollapsed) {
             await menuItem.click();
         }
         const subMenuItem = this.subMenuLocator(subMenu);
-        await subMenuItem.waitFor({ state: 'visible' });
+        await this.waitForElementVisible(subMenuItem)
         await subMenuItem.scrollIntoViewIfNeeded();
-        await subMenuItem.click();
+        await this.clickElement(subMenuItem)
     }
 
     // Forms section
