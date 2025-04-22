@@ -33,14 +33,14 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
-
+    screenshot: 'only-on-failure',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
     headless: true,
-    viewport: { width: 1920, height: 1080 }, // or viewport: null to use full screen
+    viewport: { width: 1920, height: 1080 },
     launchOptions: {
-      args: ['--start-maximized']
+      args: ['--window-size=1920,1080'] // đảm bảo khởi tạo đúng kích thước
     },
     // actionTimeout: 5000,
     // navigationTimeout: 2000,
