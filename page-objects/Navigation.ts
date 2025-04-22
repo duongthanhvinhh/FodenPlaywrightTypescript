@@ -42,32 +42,33 @@ enum SubMenu {
     ResetPassword = 'Reset Password'
 }
 
-export class NavigationPage extends BasePage {
+export class Navigation extends BasePage {
     constructor(page: Page) {
         super(page);
     }
 
     // Locators
     private menuLocator(menu: Menu): Locator {
-        return this.page.getByText(menu, { exact: true });
+        return this.page.getByTitle(menu, { exact: true });
     }
 
     private subMenuLocator(subMenu: SubMenu): Locator {
-        return this.page.getByText(subMenu, { exact: true });
+        return this.page.getByTitle(subMenu, { exact: true });
     }
 
     // Navigation logic
     private async navigateToMenu(menu: Menu, subMenu: SubMenu) {
         const menuItem = this.menuLocator(menu);
-        await this.waitForElementVisible(menuItem)
         await menuItem.scrollIntoViewIfNeeded();
+        await this.waitForElementVisible(menuItem)
+        const foden = await menuItem.getAttribute('aria-expanded')
         const isMenuItemCollapsed = await menuItem.getAttribute('aria-expanded') === 'false';
         if (isMenuItemCollapsed) {
             await menuItem.click();
         }
         const subMenuItem = this.subMenuLocator(subMenu);
-        await this.waitForElementVisible(subMenuItem)
         await subMenuItem.scrollIntoViewIfNeeded();
+        await this.waitForElementVisible(subMenuItem)
         await this.clickElement(subMenuItem)
     }
 
