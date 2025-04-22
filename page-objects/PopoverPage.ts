@@ -1,8 +1,8 @@
-import {Page, Locator} from '@playwright/test'
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class PopoverPage{
-    private readonly page: Page
-    constructor(page: Page){
-        this.page = page
+export class PopoverPage extends BasePage {
+    constructor(page: Page) {
+        super(page);
     }
 }

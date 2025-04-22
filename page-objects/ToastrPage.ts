@@ -1,8 +1,8 @@
-import {Page, Locator} from '@playwright/test'
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class ToastrPage{
-    private readonly page: Page
-    constructor(page: Page){
-        this.page = page
+export class ToastrPage extends BasePage {
+    constructor(page: Page) {
+        super(page);
     }
 }

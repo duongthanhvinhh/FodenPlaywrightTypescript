@@ -1,8 +1,8 @@
-import {Page, Locator} from '@playwright/test'
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class DatePickerPage{
-    private readonly page: Page
-    constructor(page: Page){
-        this.page = page
+export class DatePickerPage extends BasePage {
+    constructor(page: Page) {
+        super(page);
     }
 }

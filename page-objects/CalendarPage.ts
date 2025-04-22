@@ -1,8 +1,8 @@
 import {Page, Locator} from '@playwright/test'
+import { BasePage } from './BasePage'
 
-export class CalendarPage{
-    private readonly page: Page
+export class CalendarPage extends BasePage{
     constructor(page: Page){
-        this.page = page
+        super(page)
     }
 }

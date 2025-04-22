@@ -1,8 +1,8 @@
-import {Page, Locator} from '@playwright/test'
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class ResetPasswordPage{
-    private readonly page: Page
-    constructor(page: Page){
-        this.page = page
+export class ResetPasswordPage extends BasePage {
+    constructor(page: Page) {
+        super(page);
     }
 }
